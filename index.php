@@ -1,5 +1,6 @@
 <?php
     require "db/config.php";
+    $errorMessage = "";
 ?>
 
 <html lang="en">
@@ -14,24 +15,56 @@
 <body>
     <div class="login-page">
     <div class="form">
-        <form class="register-form">
-        <input type="text" placeholder="Enter Username"/>
-        <input type="password" placeholder="Enter Password"/>
-        <input type="text" placeholder="Enter A Valid Email"/>
-        <button>Create</button>
-        <p class="message">Registered? <a href="#">Log in</a>
+        <!-- Registration form -->
+        <form class="register-form" method="POST" action="index.php">
+        <label style="color:red;"><?php $errorMessage ?></label>
+        <input type="text" name="username" placeholder="Enter Username" required/>
+        <input type="password" name="pwd" placeholder="Enter Password" required/>
+        <input type="email" name="email" placeholder="Enter A Valid Email" required/>
+        <button type="submit" name="register">Register</button>
+        <p class="message">Already have an account? <a href="#">Log in</a>
         </p>
         </form>
+        <!-- /Registration form -->
 
-        <form class="login-form">
-        <input type="text" placeholder="Enter Username"/>
-        <input type="password" placeholder="Enter Password"/>
-        <button>Log in</button>
-        <p class="message">Don't Have An Account? <a href="#">Register</a>
+        <!-- Registration script -->
+            <?php
+                if(isset($_POST['register'])){
+                    $Username = ucfirst($_POST['username']);
+                    $encryPassword = md5($_POST['pwd']);
+                    $Email = $_POST['email'];
+
+                    $add = "INSERT INTO Users (Username, Password, Email)
+                    VALUES('$Username', '$encryPassword', '$Email')";
+
+                    $result = mysqli_query($myConn, $add);
+                    
+                    if ($result === TRUE){
+            ?>
+
+            <script type="text/javascript">
+                window.location = "sucessful.php";
+            </script>
+
+            <?php
+                } 
+                else {
+                $errorMessage = "Something went wrong";
+                }
+                    }
+            ?>
+        <!-- /Registration script -->
+        
+        <!-- Login form -->
+        <form class="login-form" method="post" action="index.php">
+        <input type="text" name="username" placeholder="Enter Username" required/>
+        <input type="password" name="pwd" placeholder="Enter Password" required/>
+        <button name="login">Log in</button>
+        <p class="message">Don't have an account? <a href="#">Register</a>
         </p>
         </form>
-        </div> 
-    </div>
+        <!-- /Login form -->
+    
     </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
